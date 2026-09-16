@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forca Bíblica — O Jogo que Ilumina sua Fé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c96e;
+    --gold-dim: rgba(201,168,76,0.18);
+    --cream: #f0e6cc;
+    --bg: #0a0e14;
+    --bg2: #10141c;
+    --text: #ddd3b8;
+    --muted: #7a6d55;
+    --bg3: #171c26;
+    --wrong: #b3543f;
+    --right: #6f9d6a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lora', serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 3rem;
+    background: rgba(10,14,20,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 5rem;
+    position: relative;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 20%, rgba(180,140,20,0.10) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 60% at 80% 80%, rgba(80,60,20,0.08) 0%, transparent 60%),
+      var(--bg);
+    overflow: hidden;
+  }
+
+  /* Animated particles */
+  .particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0;
+    animation: float-up linear infinite;
+  }
+  @keyframes float-up {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+
+  /* Big decorative cross */
+  .deco-cross {
+    position: absolute;
+    font-size: 480px;
+    color: rgba(201,168,76,0.025);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    user-select: none;
+    pointer-events: none;
+    line-height: 1;
+    font-family: serif;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fade-in 0.8s 0.3s forwards;
+  }
+  .eyebrow-line {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--cream);
+    opacity: 0;
+    animation: fade-in 0.9s 0.5s forwards;
+  }
+
+  .hero-title .gold-word {
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 1.8rem auto;
+    width: 240px;
+    opacity: 0;
+    animation: fade-in 0.8s 0.7s forwards;
+  }
+  .hero-divider::before, .hero-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .hero-divider span { color: var(--gold); font-size: 1rem; }
+
+  .hero-tagline {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: #b0a080;
+    max-width: 560px;
+    line-height: 1.85;
+    opacity: 0;
+    animation: fade-in 0.8s 0.9s forwards;
+  }
+
+  .hero-verse {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: #4a4230;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    animation: fade-in 0.8s 1.1s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fade-in 0.8s 1.3s forwards;
+  }
+
+  @keyframes fade-in {
+    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(16px); }
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 14px 38px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: #0a0e14;
+    border: none;
+    font-weight: 700;
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(201,168,76,0.3); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.45);
+  }
+  .btn-ghost:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+
+  /* ── MOCKUP PREVIEW ── */
+  .mockup-section {
+    padding: 5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg2);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+  }
+
+  .mockup-wrapper {
+    position: relative;
+    width: min(780px, 100%);
+    margin: 3rem auto 0;
+  }
+
+  .mockup-screen {
+    background: #0f1420;
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 12px;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mockup-screen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .mockup-hint {
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 1rem 2rem;
+    text-align: center;
+    max-width: 500px;
+  }
+  .mockup-hint-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .mockup-hint-text {
+    font-style: italic;
+    color: #b0a080;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .mockup-word {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .mockup-letter {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 38px;
+    height: 50px;
+    border-bottom: 2px solid var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    padding-bottom: 4px;
+  }
+  .mockup-letter.blank { color: transparent; }
+
+  .mockup-gallows {
+    margin: 0.5rem 0;
+  }
+
+  .mockup-keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+  .mockup-key-row {
+    display: flex;
+    gap: 5px;
+  }
+  .key {
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    color: var(--muted);
+    background: rgba(201,168,76,0.04);
+  }
+  .key.used-wrong {
+    border-color: rgba(180,60,60,0.5);
+    color: rgba(180,60,60,0.5);
+    background: rgba(180,60,60,0.06);
+  }
+  .key.used-right {
+    border-color: rgba(80,160,80,0.6);
+    color: rgba(80,160,80,0.8);
+    background: rgba(80,160,80,0.07);
+  }
+
+  /* ── FEATURES ── */
+  .section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 600;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  .section-subtitle {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .feat {
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 6px;
+    padding: 2.2rem 1.8rem;
+    background: rgba(255,255,255,0.015);
+    transition: border-color 0.25s, background 0.25s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feat::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .feat:hover {
+    border-color: rgba(201,168,76,0.35);
+    background: rgba(201,168,76,0.04);
+    transform: translateY(-3px);
+  }
+  .feat:hover::after { transform: scaleX(1); }
+
+  .feat-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--gold-dim);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .feat-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 0.7rem;
+  }
+
+  .feat-text {
+    font-size: 0.88rem;
+    color: #7a6d55;
+    line-height: 1.75;
+  }
+
+  /* ── CATEGORIES STRIP ── */
+  .cats-strip {
+    background: var(--bg2);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    padding: 5rem 2rem;
+  }
+
+  .cats-strip-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .cats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .cat-card {
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 4px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.2s;
+    background: rgba(201,168,76,0.02);
+  }
+  .cat-card:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.07);
+    transform: scale(1.03);
+  }
+
+  .cat-icon { font-size: 2rem; display: block; margin-bottom: 0.7rem; }
+
+  .cat-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    color: var(--gold);
+    display: block;
+    line-height: 1.4;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-section {
+    padding: 6rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 3.5rem;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 29px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(201,168,76,0.4), transparent);
+  }
+
+  .step {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem 0;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    background: var(--bg);
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-body { padding-top: 0.5rem; }
+
+  .step-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  .step-text {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* ── QUOTE BANNER ── */
+  .quote-banner {
+    padding: 5rem 2rem;
+    text-align: center;
+    position: relative;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(180,140,20,0.07) 0%, transparent 70%),
+      var(--bg);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+  }
+
+  .quote-mark {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 6rem;
+    color: rgba(201,168,76,0.12);
+    line-height: 0;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .quote-text {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    color: var(--cream);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .quote-ref {
+    margin-top: 1.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* ── AUDIENCE ── */
+  .audience-section {
+    padding: 6rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+
+  .audience-card {
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 6px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    background: rgba(255,255,255,0.015);
+    transition: all 0.2s;
+  }
+  .audience-card:hover {
+    border-color: rgba(201,168,76,0.35);
+    background: rgba(201,168,76,0.04);
+  }
+
+  .audience-icon { font-size: 2.2rem; display: block; margin-bottom: 1rem; }
+
+  .audience-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .audience-desc {
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    padding: 7rem 2rem;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(180,140,20,0.1) 0%, transparent 70%),
+      var(--bg2);
+    border-top: 1px solid rgba(201,168,76,0.12);
+  }
+
+  .final-cta-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .final-cta-title span { color: var(--gold); }
+
+  .final-cta-text {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #060810;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .footer-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 1rem auto;
+  }
+
+  .footer-verse {
+    font-style: italic;
+    font-size: 0.8rem;
+    color: #2e2820;
+  }
+
+  .footer-copy {
+    margin-top: 2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    color: #2a2518;
+    text-transform: uppercase;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.2rem; }
+    .nav-links { gap: 1.2rem; }
+    .nav-links a { font-size: 0.6rem; letter-spacing: 1px; }
+    .mockup-screen { padding: 2rem 1.2rem; }
+    .key { width: 28px; height: 28px; font-size: 0.6rem; }
+    .steps::before { left: 24px; }
+    .step-num { width: 50px; height: 50px; min-width: 50px; }
+  }
+
+  /* ── PLAYABLE GAME (namespaced with .game- to avoid clashing with the marketing styles above) ── */
+  .game-section {
+    padding: 6rem 2rem 7rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .game-cats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .game-cat-card {
+    background: var(--bg2);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 4px;
+    padding: 1.8rem 1.2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  }
+  .game-cat-card:hover {
+    border-color: rgba(201,168,76,0.55);
+    background: var(--bg3);
+    transform: translateY(-3px);
+  }
+  .game-cat-card .icon { font-size: 1.9rem; display: block; margin-bottom: 0.8rem; }
+  .game-cat-card .name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    color: var(--cream);
+  }
+  .game-cat-card .count {
+    margin-top: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .game-wrap { display: none; margin-top: 3rem; }
+  .game-wrap.active { display: block; }
+  .game-cats-wrap.hidden { display: none; }
+
+  .game-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.4rem;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .game-back-link {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .game-back-link:hover { color: var(--gold); }
+
+  .game-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 5px 14px;
+    border-radius: 2px;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .game-badge.pulse {
+    background: var(--gold-dim);
+    box-shadow: 0 0 16px rgba(201,168,76,0.35);
+  }
+
+  .game-board {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: var(--bg2);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 6px;
+    padding: 2.2rem 1.8rem;
+  }
+
+  .game-gallows-box { flex: 0 0 auto; }
+  #gameGallows { width: 190px; height: 190px; }
+  #gameGallows .part { stroke: var(--gold); stroke-width: 4; fill: none; stroke-linecap: round; opacity: 0; transition: opacity 0.35s; }
+  #gameGallows .part.show { opacity: 1; }
+  #gameGallows .frame { stroke: var(--muted); }
+
+  .game-lives-text {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-top: 0.6rem;
+  }
+  .game-lives-text strong { color: var(--gold-light); }
+
+  .game-puzzle-box { flex: 1 1 280px; min-width: 260px; }
+
+  .game-hint-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .game-hint-text {
+    font-style: italic;
+    color: #c4b896;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.6rem;
+  }
+
+  .game-word-row { display: flex; flex-wrap: wrap; gap: 0.7rem; row-gap: 1rem; }
+  .game-word-group { display: flex; gap: 0.35rem; }
+  .game-letter-box {
+    width: 32px;
+    height: 42px;
+    border-bottom: 2px solid var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+  }
+  .game-letter-box.filled { border-color: var(--gold); }
+
+  .game-keyboard { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; }
+  .game-key-row { display: flex; gap: 0.4rem; }
+  .game-key {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    width: 36px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 2px;
+    background: var(--bg3);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .game-key:hover:not(:disabled) { border-color: var(--gold); color: var(--gold-light); transform: translateY(-1px); }
+  .game-key:disabled { cursor: default; opacity: 0.35; }
+  .game-key.right { background: rgba(111,157,106,0.18); border-color: var(--right); color: #a9d3a4; }
+  .game-key.wrong { background: rgba(179,84,63,0.18); border-color: var(--wrong); color: #e0a291; }
+
+  .game-status-banner {
+    margin-top: 1.6rem;
+    text-align: center;
+    padding: 1.4rem;
+    border-radius: 4px;
+    border: 1px solid rgba(201,168,76,0.25);
+    background: var(--bg2);
+    display: none;
+  }
+  .game-status-banner.show { display: block; }
+  .game-status-banner.win { border-color: rgba(111,157,106,0.5); }
+  .game-status-banner.lose { border-color: rgba(179,84,63,0.5); }
+  .game-status-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.4rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+  .game-status-text { color: var(--text); font-size: 0.92rem; margin-bottom: 1.1rem; }
+  .game-status-verse { font-style: italic; color: var(--muted); font-size: 0.82rem; margin-bottom: 1.1rem; }
+
+  @media (max-width: 480px) {
+    .game-key { width: 30px; height: 36px; font-size: 0.75rem; }
+    .game-letter-box { width: 26px; height: 36px; font-size: 1.05rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">✝ FORCA BÍBLICA</a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#categorias">Categorias</a></li>
+    <li><a href="#como-jogar">Como Jogar</a></li>
+    <li><a href="#jogo">Jogar</a></li>
+    <li><a href="#publico">Público</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="particles" id="particles"></div>
+  <div class="deco-cross" aria-hidden="true">✝</div>
+
+  <div class="hero-eyebrow">
+    <span class="eyebrow-line"></span>
+    Jogo Educativo Bíblico
+    <span class="eyebrow-line"></span>
+  </div>
+
+  <h1 class="hero-title">
+    Forca
+    <span class="gold-word">Bíblica</span>
+  </h1>
+
+  <div class="hero-divider"><span>✦</span></div>
+
+  <p class="hero-tagline">
+    O jogo da forca que você já conhece, agora com a profundidade e riqueza das Sagradas Escrituras. Aprenda, descubra e se divirta com a Palavra de Deus.
+  </p>
+
+  <p class="hero-verse">— "Tua palavra é lâmpada que ilumina os meus passos." — Salmo 119:105</p>
+
+  <div class="hero-cta">
+    <a href="#jogo" class="btn btn-gold">Jogar Agora</a>
+    <a href="#como-jogar" class="btn btn-ghost">Como Funciona</a>
+  </div>
+</section>
+
+<!-- MOCKUP PREVIEW -->
+<section class="mockup-section" id="sobre">
+  <span class="section-eyebrow">Visual do Jogo</span>
+  <h2 class="section-title" style="font-family:'Cinzel',serif; font-size: clamp(1.6rem,4vw,2.4rem); color: var(--cream); text-align:center;">Assim é a Experiência</h2>
+  <p style="text-align:center; font-style:italic; color:var(--muted); margin-top:0.6rem; font-size:0.95rem;">Uma tela limpa, uma dica, uma palavra para descobrir.</p>
+
+  <div class="mockup-wrapper">
+    <div class="mockup-screen">
+      <!-- Hint -->
+      <div class="mockup-hint">
+        <span class="mockup-hint-label">✦ Dica da Rodada ✦</span>
+        <p class="mockup-hint-text">Foi o maior apóstolo do Novo Testamento. Converteu-se a caminho de Damasco e escreveu grande parte das epístolas.</p>
+      </div>
+
+      <!-- Gallows SVG -->
+      <svg class="mockup-gallows" width="130" height="160" viewBox="0 0 130 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="15" y1="150" x2="110" y2="150" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="38" y1="150" x2="38" y2="10" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="38" y1="10" x2="88" y2="10" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="88" y1="10" x2="88" y2="32" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+        <!-- figure -->
+        <circle cx="88" cy="42" r="10" stroke="#ddd3b8" stroke-width="2" fill="none"/>
+        <line x1="88" y1="52" x2="88" y2="100" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
+        <line x1="88" y1="65" x2="70" y2="82" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
+        <line x1="88" y1="65" x2="106" y2="82" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
+        <line x1="88" y1="100" x2="74" y2="120" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
+        <line x1="88" y1="100" x2="102" y2="120" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+
+      <!-- Word -->
+      <div class="mockup-word">
+        <div class="mockup-letter">P</div>
+        <div class="mockup-letter blank">_</div>
+        <div class="mockup-letter">U</div>
+        <div class="mockup-letter">L</div>
+        <div class="mockup-letter blank">_</div>
+      </div>
+
+      <!-- Keyboard preview -->
+      <div class="mockup-keyboard" aria-label="Teclado do jogo">
+        <div class="mockup-key-row">
+          <div class="key used-right">P</div>
+          <div class="key used-wrong">Q</div>
+          <div class="key">W</div>
+          <div class="key used-wrong">E</div>
+          <div class="key">R</div>
+          <div class="key used-wrong">T</div>
+          <div class="key used-right">U</div>
+          <div class="key used-wrong">I</div>
+          <div class="key">O</div>
+        </div>
+        <div class="mockup-key-row">
+          <div class="key">A</div>
+          <div class="key used-wrong">S</div>
+          <div class="key">D</div>
+          <div class="key">F</div>
+          <div class="key">G</div>
+          <div class="key">H</div>
+          <div class="key">J</div>
+          <div class="key used-right">L</div>
+        </div>
+        <div class="mockup-key-row">
+          <div class="key">Z</div>
+          <div class="key">X</div>
+          <div class="key">C</div>
+          <div class="key">V</div>
+          <div class="key">B</div>
+          <div class="key">N</div>
+          <div class="key">M</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-eyebrow">Por Que Jogar</span>
+    <h2 class="section-title">Fé, Diversão e Aprendizado</h2>
+    <p class="section-subtitle">Tudo o que torna a Forca Bíblica especial.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feat">
+      <div class="feat-icon">📖</div>
+      <p class="feat-title">Conteúdo Bíblico Autêntico</p>
+      <p class="feat-text">Todas as palavras e dicas são extraídas das Escrituras: personagens, parábolas, livros, lugares sagrados e ensinamentos de Cristo.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🧠</div>
+      <p class="feat-title">Estimula a Memória</p>
+      <p class="feat-text">Ao tentar adivinhar cada palavra, o jogador exercita a memória bíblica de forma natural, sem pressão, só com curiosidade.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🎮</div>
+      <p class="feat-title">Mecânica Clássica</p>
+      <p class="feat-text">A lógica simples do jogo da forca que todo mundo conhece — escolha letras, evite erros e complete a palavra antes de acabar as tentativas.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">✝️</div>
+      <p class="feat-title">Desenvolvido com Respeito</p>
+      <p class="feat-text">Todo o conteúdo foi pensado com cuidado e reverência, preservando o valor sagrado das Escrituras em cada rodada.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">👨‍👩‍👧</div>
+      <p class="feat-title">Para Todas as Idades</p>
+      <p class="feat-text">Desde crianças até adultos, o jogo é inclusivo e acessível, ideal para famílias, grupos de jovens e comunidades religiosas.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🎓</div>
+      <p class="feat-title">Ferramenta Educativa</p>
+      <p class="feat-text">Perfeito para escolas dominicais, células, grupos de jovens e qualquer contexto onde o aprendizado bíblico seja o objetivo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="cats-strip" id="categorias">
+  <div class="cats-strip-inner">
+    <div class="section-header">
+      <span class="section-eyebrow">O Que Você Vai Descobrir</span>
+      <h2 class="section-title">Seis Categorias de Palavras</h2>
+      <p class="section-subtitle">Cada categoria é uma porta de entrada para as Escrituras.</p>
+    </div>
+
+    <div class="cats-grid">
+      <div class="cat-card">
+        <span class="cat-icon">📜</span>
+        <span class="cat-name">Livros da Bíblia</span>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">👤</span>
+        <span class="cat-name">Personagens Bíblicos</span>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">🕊️</span>
+        <span class="cat-name">Parábolas de Jesus</span>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">⛰️</span>
+        <span class="cat-name">Lugares Sagrados</span>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">✨</span>
+        <span class="cat-name">Milagres Bíblicos</span>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">💡</span>
+        <span class="cat-name">Ensinamentos e Valores</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="como-jogar">
+  <div class="section-header">
+    <span class="section-eyebrow">Como Funciona</span>
+    <h2 class="section-title">Quatro Passos Simples</h2>
+    <p class="section-subtitle">A regra é a mesma da forca clássica — o tema é divino.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p class="step-title">Receba uma Dica Bíblica</p>
+        <p class="step-text">Cada rodada começa com uma dica. Pode ser uma descrição de um personagem, o resumo de uma parábola, ou a localização de um lugar sagrado.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p class="step-title">Observe a Palavra Oculta</p>
+        <p class="step-text">Você verá os espaços em branco correspondentes a cada letra da palavra secreta. Tente descobrir do que se trata antes de começar.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p class="step-title">Escolha as Letras</p>
+        <p class="step-text">Selecione uma letra por vez. Acertou? Ela aparece na palavra. Errou? Uma parte da forca é desenhada. Você tem seis tentativas erradas.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p class="step-title">Complete a Palavra e Aprenda</p>
+        <p class="step-text">Ao completar a palavra, você descobre um pouco mais sobre aquele tema bíblico. Cada rodada é uma pequena lição da fé.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAY THE GAME -->
+<section class="game-section" id="jogo">
+  <div class="section-header">
+    <span class="section-eyebrow">Comece Agora</span>
+    <h2 class="section-title">Jogue Forca Bíblica</h2>
+    <p class="section-subtitle">Escolha uma categoria e comece a desvendar a Palavra, letra por letra.</p>
+  </div>
+
+  <div class="game-cats-wrap" id="gameCatsWrap">
+    <div class="game-cats-grid" id="gameCatsGrid"></div>
+  </div>
+
+  <div class="game-wrap" id="gameWrap">
+    <div class="game-top">
+      <button class="game-back-link" id="gameBackBtn">← Voltar às categorias</button>
+      <span class="game-badge" id="gameCatBadge"></span>
+    </div>
+
+    <div class="game-board">
+      <div class="game-gallows-box">
+        <svg id="gameGallows" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+          <line class="part frame" x1="15" y1="150" x2="90" y2="150"/>
+          <line class="part frame" x1="35" y1="150" x2="35" y2="15"/>
+          <line class="part frame" x1="34" y1="15" x2="105" y2="15"/>
+          <line class="part frame" x1="104" y1="15" x2="104" y2="32"/>
+          <circle class="part" id="gp-head" cx="104" cy="45" r="13"/>
+          <line class="part" id="gp-body" x1="104" y1="58" x2="104" y2="95"/>
+          <line class="part" id="gp-arml" x1="104" y1="68" x2="88" y2="85"/>
+          <line class="part" id="gp-armr" x1="104" y1="68" x2="120" y2="85"/>
+          <line class="part" id="gp-legl" x1="104" y1="95" x2="90" y2="120"/>
+          <line class="part" id="gp-legr" x1="104" y1="95" x2="118" y2="120"/>
+        </svg>
+        <p class="game-lives-text">Erros: <strong id="gameWrongCount">0</strong> / 6</p>
+      </div>
+
+      <div class="game-puzzle-box">
+        <p class="game-hint-label">Dica</p>
+        <p class="game-hint-text" id="gameHintText"></p>
+        <div class="game-word-row" id="gameWordRow"></div>
+      </div>
+    </div>
+
+    <div class="game-keyboard" id="gameKeyboard"></div>
+
+    <div class="game-status-banner" id="gameStatusBanner">
+      <p class="game-status-title" id="gameStatusTitle"></p>
+      <p class="game-status-text" id="gameStatusText"></p>
+      <p class="game-status-verse" id="gameStatusVerse"></p>
+      <button class="btn btn-gold" id="gameNextBtn" style="font-size:0.65rem; padding:11px 26px;">Continuar Agora</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-banner">
+  <span class="quote-mark">"</span>
+  <p class="quote-text">Porque a palavra de Deus é viva e eficaz, e mais afiada do que qualquer espada de dois gumes.</p>
+  <p class="quote-ref">— Hebreus 4:12</p>
+</section>
+
+<!-- AUDIENCE -->
+<section class="audience-section" id="publico">
+  <div class="section-header">
+    <span class="section-eyebrow">Para Quem É</span>
+    <h2 class="section-title">Um Jogo para Cada Contexto</h2>
+    <p class="section-subtitle">Forca Bíblica se adapta a qualquer grupo ou ambiente.</p>
+  </div>
+
+  <div class="audience-grid">
+    <div class="audience-card">
+      <span class="audience-icon">⛪</span>
+      <span class="audience-title">Igrejas e Comunidades</span>
+      <p class="audience-desc">Ideal para dinâmicas de grupo, cultos de jovens, eventos e celebrações da comunidade cristã.</p>
+    </div>
+    <div class="audience-card">
+      <span class="audience-icon">📚</span>
+      <span class="audience-title">Escolas Dominicais</span>
+      <p class="audience-desc">Uma ferramenta lúdica e eficaz para professores que querem engajar alunos no aprendizado bíblico.</p>
+    </div>
+    <div class="audience-card">
+      <span class="audience-icon">🏠</span>
+      <span class="audience-title">Famílias em Casa</span>
+      <p class="audience-desc">Momentos de lazer em família com propósito, unindo gerações em torno da Palavra.</p>
+    </div>
+    <div class="audience-card">
+      <span class="audience-icon">👨‍🎓</span>
+      <span class="audience-title">Estudantes da Bíblia</span>
+      <p class="audience-desc">Para quem estuda teologia ou deseja aprofundar o conhecimento bíblico de forma dinâmica e desafiadora.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2 class="final-cta-title">
+    Pronto para Descobrir<br>
+    <span>a Palavra?</span>
+  </h2>
+  <p class="final-cta-text">Junte-se a todos que já estão aprendendo as Escrituras de um jeito completamente novo — letra por letra.</p>
+  <a href="#jogo" class="btn btn-gold" style="font-size:0.75rem; padding: 16px 50px;">✝ &nbsp;Jogar Agora</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Forca Bíblica</span>
+  <div class="footer-divider"></div>
+  <p class="footer-verse">"Aprender a Palavra com alegria."</p>
+  <p style="margin-top: 0.8rem; font-size:0.75rem; color:#3a3020; font-style:italic;">"A tua palavra é lâmpada que ilumina os meus passos." — Salmo 119:105</p>
+  <p class="footer-copy">© 2025 Forca Bíblica &nbsp;·&nbsp; Desenvolvido com fé e propósito</p>
+</footer>
+
+<script>
+  /* Floating particles */
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${Math.random() < 0.5 ? 2 : 3}px;
+      height: ${Math.random() < 0.5 ? 2 : 3}px;
+      animation-duration: ${8 + Math.random() * 12}s;
+      animation-delay: ${Math.random() * 10}s;
+      opacity: 0;
+    `;
+    container.appendChild(p);
+  }
+
+  /* Smooth nav highlight */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? '#c9a84c' : '';
+    });
+  });
+</script>
+
+<!-- PLAYABLE GAME LOGIC -->
+<script>
+  const CATEGORIES = [
+    {
+      id: 'livros', icon: '📜', name: 'Livros da Bíblia',
+      words: [
+        { w: 'GENESIS', hint: 'Primeiro livro da Bíblia, narra a criação do mundo.' },
+        { w: 'EXODO', hint: 'Narra a saída do povo de Israel da escravidão no Egito.' },
+        { w: 'LEVITICO', hint: 'Terceiro livro do Pentateuco, cheio de leis e rituais.' },
+        { w: 'SALMOS', hint: 'Livro de cânticos e orações, muitos escritos por Davi.' },
+        { w: 'PROVERBIOS', hint: 'Livro de sabedoria atribuído principalmente a Salomão.' },
+        { w: 'ISAIAS', hint: 'Grande profeta que anunciou a vinda do Messias.' },
+        { w: 'MATEUS', hint: 'Primeiro evangelho do Novo Testamento.' },
+        { w: 'MARCOS', hint: 'O evangelho mais curto e direto sobre Jesus.' },
+        { w: 'LUCAS', hint: 'Evangelho escrito por um médico, companheiro de Paulo.' },
+        { w: 'JOAO', hint: 'Evangelho que começa com "No princípio era o Verbo".' },
+        { w: 'APOCALIPSE', hint: 'Último livro da Bíblia, cheio de visões proféticas.' },
+        { w: 'ROMANOS', hint: 'Carta de Paulo à igreja da capital do império.' },
+      ]
+    },
+    {
+      id: 'personagens', icon: '👤', name: 'Personagens Bíblicos',
+      words: [
+        { w: 'MOISES', hint: 'Libertou o povo de Israel da escravidão no Egito.' },
+        { w: 'ABRAAO', hint: 'Pai da fé, chamado por Deus para deixar sua terra.' },
+        { w: 'DAVI', hint: 'Jovem pastor que derrotou o gigante Golias.' },
+        { w: 'SALOMAO', hint: 'Rei famoso por sua grande sabedoria.' },
+        { w: 'NOE', hint: 'Construiu uma arca para salvar sua família e os animais.' },
+        { w: 'JOSE', hint: 'Foi vendido pelos irmãos, mas se tornou governador do Egito.' },
+        { w: 'MARIA', hint: 'Mãe de Jesus, escolhida por Deus.' },
+        { w: 'PEDRO', hint: 'Pescador que se tornou um dos principais apóstolos.' },
+        { w: 'PAULO', hint: 'Perseguidor dos cristãos que se converteu e pregou o evangelho.' },
+        { w: 'SANSAO', hint: 'Homem de força sobre-humana, traído por Dalila.' },
+        { w: 'ESTER', hint: 'Rainha que arriscou a vida para salvar seu povo.' },
+        { w: 'JONAS', hint: 'Profeta que fugiu de Deus e foi engolido por um grande peixe.' },
+        { w: 'DANIEL', hint: 'Foi lançado na cova dos leões e sobreviveu.' },
+        { w: 'RUTE', hint: 'Moabita fiel que se tornou bisavó do rei Davi.' },
+      ]
+    },
+    {
+      id: 'parabolas', icon: '🕊️', name: 'Parábolas de Jesus',
+      words: [
+        { w: 'SEMEADOR', hint: 'Parábola sobre a semente que cai em diferentes solos.' },
+        { w: 'FILHO PRODIGO', hint: 'Filho que desperdiça sua herança e depois volta para casa.' },
+        { w: 'BOM SAMARITANO', hint: 'Parábola sobre amar ao próximo, mesmo o estranho.' },
+        { w: 'OVELHA PERDIDA', hint: 'O pastor deixa noventa e nove para buscar uma só.' },
+        { w: 'TALENTOS', hint: 'Servos recebem quantias e são avaliados pelo que fizeram com elas.' },
+        { w: 'FERMENTO', hint: 'Pequena parábola sobre como o Reino dos Céus cresce.' },
+        { w: 'MOEDA PERDIDA', hint: 'Uma mulher varre a casa inteira até encontrar o que perdeu.' },
+      ]
+    },
+    {
+      id: 'lugares', icon: '⛰️', name: 'Lugares Sagrados',
+      words: [
+        { w: 'JERUSALEM', hint: 'Cidade santa, centro da fé judaica e cristã.' },
+        { w: 'BELEM', hint: 'Cidade onde Jesus nasceu.' },
+        { w: 'NAZARE', hint: 'Cidade onde Jesus cresceu.' },
+        { w: 'EGITO', hint: 'Terra onde os hebreus viveram escravizados.' },
+        { w: 'JORDAO', hint: 'Rio onde Jesus foi batizado.' },
+        { w: 'SINAI', hint: 'Monte onde Moisés recebeu os Dez Mandamentos.' },
+        { w: 'GETSEMANI', hint: 'Jardim onde Jesus orou antes de ser preso.' },
+        { w: 'CANAA', hint: 'Terra prometida ao povo de Israel.' },
+        { w: 'BABILONIA', hint: 'Cidade para onde os judeus foram levados em exílio.' },
+        { w: 'GALILEIA', hint: 'Região onde Jesus realizou grande parte do seu ministério.' },
+      ]
+    },
+    {
+      id: 'milagres', icon: '✨', name: 'Milagres Bíblicos',
+      words: [
+        { w: 'MANA', hint: 'Alimento que caía do céu para o povo no deserto.' },
+        { w: 'RESSURREICAO', hint: 'O maior milagre: Jesus venceu a morte.' },
+        { w: 'AGUA EM VINHO', hint: 'Primeiro milagre de Jesus, nas bodas de Caná.' },
+        { w: 'MAR VERMELHO', hint: 'Aberto por Moisés para o povo atravessar em segurança.' },
+        { w: 'CEGO CURADO', hint: 'Jesus devolveu a visão a um homem que nunca tinha enxergado.' },
+        { w: 'PAO MULTIPLICADO', hint: 'Cinco pães e dois peixes alimentaram uma multidão.' },
+        { w: 'LAZARO', hint: 'Amigo de Jesus que voltou à vida após quatro dias morto.' },
+      ]
+    },
+    {
+      id: 'ensinamentos', icon: '💡', name: 'Ensinamentos e Valores',
+      words: [
+        { w: 'AMOR', hint: 'O maior mandamento, segundo Jesus.' },
+        { w: 'FE', hint: 'Confiança naquilo que ainda não se vê.' },
+        { w: 'PERDAO', hint: 'Jesus ensinou a perdoar setenta vezes sete.' },
+        { w: 'HUMILDADE', hint: 'Virtude de quem se coloca em último lugar.' },
+        { w: 'ESPERANCA', hint: 'Certeza das coisas que ainda virão.' },
+        { w: 'GRACA', hint: 'Favor imerecido de Deus para com a humanidade.' },
+        { w: 'SABEDORIA', hint: 'Dom pedido por Salomão a Deus, acima de riquezas.' },
+        { w: 'PACIENCIA', hint: 'Fruto do Espírito ligado a esperar com calma.' },
+      ]
+    },
+  ];
+
+  const MAX_WRONG = 6;
+  const PARTS = ['gp-head','gp-body','gp-arml','gp-armr','gp-legl','gp-legr'];
+
+  let gState = { cat: null, catIndex: 0, queue: [], qPos: 0, entry: null, guessed: new Set(), wrong: 0, over: false };
+  let gAdvanceTimer = null;
+
+  const gCatsGrid = document.getElementById('gameCatsGrid');
+  const gCatsWrap = document.getElementById('gameCatsWrap');
+  const gWrap = document.getElementById('gameWrap');
+  const gCatBadge = document.getElementById('gameCatBadge');
+  const gHintText = document.getElementById('gameHintText');
+  const gWordRow = document.getElementById('gameWordRow');
+  const gKeyboard = document.getElementById('gameKeyboard');
+  const gWrongCountEl = document.getElementById('gameWrongCount');
+  const gStatusBanner = document.getElementById('gameStatusBanner');
+  const gStatusTitle = document.getElementById('gameStatusTitle');
+  const gStatusText = document.getElementById('gameStatusText');
+  const gStatusVerse = document.getElementById('gameStatusVerse');
+
+  const VERSES_WIN = [
+    '"A tua palavra é lâmpada que ilumina os meus passos." — Salmo 119:105',
+    '"Porque a palavra de Deus é viva e eficaz." — Hebreus 4:12',
+    '"Peçam e receberão, para que a alegria de vocês seja completa." — João 16:24',
+  ];
+  const VERSES_LOSE = [
+    '"O Senhor é a minha luz e a minha salvação." — Salmo 27:1',
+    '"Ainda que eu ande pelo vale da sombra da morte, não temerei mal algum." — Salmo 23:4',
+    '"Tudo posso naquele que me fortalece." — Filipenses 4:13',
+  ];
+
+  function gBuildCategoryCards() {
+    gCatsGrid.innerHTML = '';
+    CATEGORIES.forEach((cat, idx) => {
+      const card = document.createElement('div');
+      card.className = 'game-cat-card';
+      card.innerHTML = `<span class="icon">${cat.icon}</span><span class="name">${cat.name}</span><p class="count">${cat.words.length} palavras</p>`;
+      card.addEventListener('click', () => gStartCategory(cat, idx));
+      gCatsGrid.appendChild(card);
+    });
+  }
+
+  function gShuffledIndices(n) {
+    const arr = Array.from({ length: n }, (_, i) => i);
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function gStartCategory(cat, catIndex) {
+    gState.cat = cat;
+    gState.catIndex = catIndex;
+    gState.queue = gShuffledIndices(cat.words.length);
+    gState.qPos = 0;
+    gCatsWrap.classList.add('hidden');
+    gWrap.classList.add('active');
+    gCatBadge.textContent = cat.icon + '  ' + cat.name;
+    gLoadWord();
+  }
+
+  function gLoadWord() {
+    clearTimeout(gAdvanceTimer);
+    const wordIndex = gState.queue[gState.qPos];
+    gState.entry = gState.cat.words[wordIndex];
+    gState.guessed = new Set();
+    gState.wrong = 0;
+    gState.over = false;
+    gStatusBanner.classList.remove('show', 'win', 'lose');
+    gRender();
+  }
+
+  function gAdvanceWord() {
+    gState.qPos++;
+    if (gState.qPos >= gState.queue.length) {
+      const nextCatIndex = (gState.catIndex + 1) % CATEGORIES.length;
+      const nextCat = CATEGORIES[nextCatIndex];
+      gState.cat = nextCat;
+      gState.catIndex = nextCatIndex;
+      gState.queue = gShuffledIndices(nextCat.words.length);
+      gState.qPos = 0;
+      gCatBadge.textContent = nextCat.icon + '  ' + nextCat.name;
+      gCatBadge.classList.add('pulse');
+      setTimeout(() => gCatBadge.classList.remove('pulse'), 1200);
+    }
+    gLoadWord();
+  }
+
+  function gBackToCategories() {
+    clearTimeout(gAdvanceTimer);
+    gWrap.classList.remove('active');
+    gCatsWrap.classList.remove('hidden');
+    gStatusBanner.classList.remove('show', 'win', 'lose');
+  }
+
+  function gRender() {
+    gHintText.textContent = gState.entry.hint;
+    gWrongCountEl.textContent = gState.wrong;
+
+    PARTS.forEach((id, i) => {
+      document.getElementById(id).classList.toggle('show', i < gState.wrong);
+    });
+
+    gWordRow.innerHTML = '';
+    gState.entry.w.split(' ').forEach(chunk => {
+      const group = document.createElement('div');
+      group.className = 'game-word-group';
+      chunk.split('').forEach(letter => {
+        const box = document.createElement('div');
+        const shown = gState.guessed.has(letter);
+        box.className = 'game-letter-box' + (shown ? ' filled' : '');
+        box.textContent = shown ? letter : '';
+        group.appendChild(box);
+      });
+      gWordRow.appendChild(group);
+    });
+
+    gBuildKeyboard();
+  }
+
+  function gBuildKeyboard() {
+    gKeyboard.innerHTML = '';
+    const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+    rows.forEach(row => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'game-key-row';
+      row.split('').forEach(letter => {
+        const btn = document.createElement('button');
+        btn.className = 'game-key';
+        btn.textContent = letter;
+        const used = gState.guessed.has(letter);
+        if (used) {
+          btn.disabled = true;
+          btn.classList.add(gState.entry.w.includes(letter) ? 'right' : 'wrong');
+        }
+        if (gState.over) btn.disabled = true;
+        btn.addEventListener('click', () => gGuess(letter));
+        rowEl.appendChild(btn);
+      });
+      gKeyboard.appendChild(rowEl);
+    });
+  }
+
+  function gGuess(letter) {
+    if (gState.over || gState.guessed.has(letter)) return;
+    gState.guessed.add(letter);
+
+    if (!gState.entry.w.includes(letter)) {
+      gState.wrong++;
+    }
+
+    gRender();
+    gCheckEnd();
+  }
+
+  function gCheckEnd() {
+    const word = gState.entry.w.replace(/ /g, '');
+    const solved = word.split('').every(l => gState.guessed.has(l));
+
+    if (solved) {
+      gState.over = true;
+      gRender();
+      gShowStatus(true);
+      gAdvanceTimer = setTimeout(gAdvanceWord, 2200);
+    } else if (gState.wrong >= MAX_WRONG) {
+      gState.over = true;
+      gState.guessed = new Set(gState.entry.w.split(''));
+      gRender();
+      gShowStatus(false);
+      gAdvanceTimer = setTimeout(gAdvanceWord, 3200);
+    }
+  }
+
+  function gShowStatus(won) {
+    gStatusBanner.classList.add('show', won ? 'win' : 'lose');
+    gStatusTitle.textContent = won ? 'Você acertou!' : 'Não dessa vez.';
+    gStatusText.textContent = `A palavra era "${gState.entry.w}". ${gState.entry.hint}`;
+    const verses = won ? VERSES_WIN : VERSES_LOSE;
+    gStatusVerse.textContent = verses[Math.floor(Math.random() * verses.length)];
+  }
+
+  document.getElementById('gameBackBtn').addEventListener('click', gBackToCategories);
+  document.getElementById('gameNextBtn').addEventListener('click', () => {
+    clearTimeout(gAdvanceTimer);
+    gAdvanceWord();
+  });
+
+  window.addEventListener('keydown', e => {
+    if (!gWrap.classList.contains('active') || gState.over) return;
+    const letter = e.key.toUpperCase();
+    if (/^[A-Z]$/.test(letter)) gGuess(letter);
+  });
+
+  gBuildCategoryCards();
+</script>
+</body>
+</html>
