@@ -766,7 +766,7 @@
     color: var(--muted);
   }
 
-  .game-wrap { display: none; margin-top: 3rem; }
+  .game-wrap { display: none; margin-top: 3rem; position: relative; }
   .game-wrap.active { display: block; }
   .game-cats-wrap.hidden { display: none; }
 
@@ -815,6 +815,7 @@
     border: 1px solid rgba(201,168,76,0.15);
     border-radius: 6px;
     padding: 2.2rem 1.8rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
 
   .game-gallows-box { flex: 0 0 auto; }
@@ -863,6 +864,7 @@
     font-family: 'Cinzel', serif;
     font-size: 1.3rem;
     color: var(--cream);
+    transition: all 0.25s;
   }
   .game-letter-box.filled { border-color: var(--gold); }
 
@@ -908,6 +910,59 @@
   }
   .game-status-text { color: var(--text); font-size: 0.92rem; margin-bottom: 1.1rem; }
   .game-status-verse { font-style: italic; color: var(--muted); font-size: 0.82rem; margin-bottom: 1.1rem; }
+
+  /* ── INTERATIVIDADE DE FIM DE JOGO ── */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  .shake-board {
+    animation: shake 0.45s ease-in-out;
+  }
+
+  .game-board.lose-glow {
+    border-color: var(--wrong);
+    box-shadow: 0 0 25px rgba(179,84,63,0.35);
+  }
+
+  .game-board.win-glow {
+    border-color: var(--gold);
+    box-shadow: 0 0 30px rgba(201,168,76,0.35);
+  }
+
+  .game-letter-box.missed-reveal {
+    color: #e0a291;
+    border-bottom-color: var(--wrong);
+  }
+
+  .game-letter-box.win-bounce {
+    animation: bounceLetter 0.5s ease backwards;
+  }
+
+  @keyframes bounceLetter {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-12px) scale(1.1); color: var(--gold-light); }
+    100% { transform: translateY(0); }
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 14px;
+    background: var(--gold);
+    top: -20px;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 50;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(450px) rotate(720deg); opacity: 0; }
+  }
 
   @media (max-width: 480px) {
     .game-key { width: 30px; height: 36px; font-size: 0.75rem; }
@@ -967,19 +1022,16 @@
 
   <div class="mockup-wrapper">
     <div class="mockup-screen">
-      <!-- Hint -->
       <div class="mockup-hint">
         <span class="mockup-hint-label">✦ Dica da Rodada ✦</span>
         <p class="mockup-hint-text">Foi o maior apóstolo do Novo Testamento. Converteu-se a caminho de Damasco e escreveu grande parte das epístolas.</p>
       </div>
 
-      <!-- Gallows SVG -->
       <svg class="mockup-gallows" width="130" height="160" viewBox="0 0 130 160" fill="none" xmlns="http://www.w3.org/2000/svg">
         <line x1="15" y1="150" x2="110" y2="150" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="38" y1="150" x2="38" y2="10" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="38" y1="10" x2="88" y2="10" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="88" y1="10" x2="88" y2="32" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
-        <!-- figure -->
         <circle cx="88" cy="42" r="10" stroke="#ddd3b8" stroke-width="2" fill="none"/>
         <line x1="88" y1="52" x2="88" y2="100" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
         <line x1="88" y1="65" x2="70" y2="82" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
@@ -988,7 +1040,6 @@
         <line x1="88" y1="100" x2="102" y2="120" stroke="#ddd3b8" stroke-width="2" stroke-linecap="round"/>
       </svg>
 
-      <!-- Word -->
       <div class="mockup-word">
         <div class="mockup-letter">P</div>
         <div class="mockup-letter blank">_</div>
@@ -997,7 +1048,6 @@
         <div class="mockup-letter blank">_</div>
       </div>
 
-      <!-- Keyboard preview -->
       <div class="mockup-keyboard" aria-label="Teclado do jogo">
         <div class="mockup-key-row">
           <div class="key used-right">P</div>
@@ -1030,7 +1080,6 @@
           <div class="key">M</div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
@@ -1395,11 +1444,11 @@
   const PARTS = ['gp-head','gp-body','gp-arml','gp-armr','gp-legl','gp-legr'];
 
   let gState = { cat: null, catIndex: 0, queue: [], qPos: 0, entry: null, guessed: new Set(), wrong: 0, over: false };
-  let gAdvanceTimer = null;
 
   const gCatsGrid = document.getElementById('gameCatsGrid');
   const gCatsWrap = document.getElementById('gameCatsWrap');
   const gWrap = document.getElementById('gameWrap');
+  const gBoard = document.querySelector('.game-board');
   const gCatBadge = document.getElementById('gameCatBadge');
   const gHintText = document.getElementById('gameHintText');
   const gWordRow = document.getElementById('gameWordRow');
@@ -1409,6 +1458,7 @@
   const gStatusTitle = document.getElementById('gameStatusTitle');
   const gStatusText = document.getElementById('gameStatusText');
   const gStatusVerse = document.getElementById('gameStatusVerse');
+  const gNextBtn = document.getElementById('gameNextBtn');
 
   const VERSES_WIN = [
     '"A tua palavra é lâmpada que ilumina os meus passos." — Salmo 119:105',
@@ -1420,6 +1470,66 @@
     '"Ainda que eu ande pelo vale da sombra da morte, não temerei mal algum." — Salmo 23:4',
     '"Tudo posso naquele que me fortalece." — Filipenses 4:13',
   ];
+
+  /* Efeitos sonoros via Web Audio API */
+  let audioCtx = null;
+  function getAudioContext() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playSound(type) {
+    try {
+      const ctx = getAudioContext();
+      if (type === 'win') {
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // Acorde Maior Brilhante (C5, E5, G5, C6)
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + idx * 0.1 + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.1 + 0.6);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.1);
+          osc.stop(ctx.currentTime + idx * 0.1 + 0.65);
+        });
+      } else if (type === 'lose') {
+        const notes = [311.13, 277.18, 233.08]; // Tons menores descendentes
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.18);
+          gain.gain.exponentialRampToValueAtTime(0.15, ctx.currentTime + idx * 0.18 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.18 + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.18);
+          osc.stop(ctx.currentTime + idx * 0.18 + 0.5);
+        });
+      }
+    } catch (e) {
+      // Navegadores sem suporte a áudio continuam normalmente
+    }
+  }
+
+  function createConfetti() {
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = (Math.random() * 90 + 5) + '%';
+      c.style.background = ['#c9a84c', '#e8c96e', '#f0e6cc', '#6f9d6a'][Math.floor(Math.random() * 4)];
+      c.style.animationDuration = (1.2 + Math.random() * 1.2) + 's';
+      c.style.animationDelay = (Math.random() * 0.3) + 's';
+      gWrap.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }
+  }
 
   function gBuildCategoryCards() {
     gCatsGrid.innerHTML = '';
@@ -1453,12 +1563,13 @@
   }
 
   function gLoadWord() {
-    clearTimeout(gAdvanceTimer);
     const wordIndex = gState.queue[gState.qPos];
     gState.entry = gState.cat.words[wordIndex];
     gState.guessed = new Set();
     gState.wrong = 0;
     gState.over = false;
+
+    gBoard.classList.remove('win-glow', 'lose-glow', 'shake-board');
     gStatusBanner.classList.remove('show', 'win', 'lose');
     gRender();
   }
@@ -1480,10 +1591,10 @@
   }
 
   function gBackToCategories() {
-    clearTimeout(gAdvanceTimer);
     gWrap.classList.remove('active');
     gCatsWrap.classList.remove('hidden');
     gStatusBanner.classList.remove('show', 'win', 'lose');
+    gBoard.classList.remove('win-glow', 'lose-glow', 'shake-board');
   }
 
   function gRender() {
@@ -1552,34 +1663,70 @@
 
     if (solved) {
       gState.over = true;
-      gRender();
+      gBoard.classList.add('win-glow');
+      playSound('win');
+      createConfetti();
+
+      // Animação de pulo nas letras acertadas
+      const boxes = gWordRow.querySelectorAll('.game-letter-box');
+      boxes.forEach((b, i) => {
+        b.style.animationDelay = (i * 0.06) + 's';
+        b.classList.add('win-bounce');
+      });
+
       gShowStatus(true);
-      gAdvanceTimer = setTimeout(gAdvanceWord, 2200);
+      gBuildKeyboard();
     } else if (gState.wrong >= MAX_WRONG) {
       gState.over = true;
-      gState.guessed = new Set(gState.entry.w.split(''));
-      gRender();
+      gBoard.classList.add('lose-glow', 'shake-board');
+      playSound('lose');
+
+      // Revela as letras com destaque para as que faltavam
+      const boxes = gWordRow.querySelectorAll('.game-letter-box');
+      let letterIndex = 0;
+      const fullWord = gState.entry.w.replace(/ /g, '');
+      boxes.forEach(box => {
+        const l = fullWord[letterIndex++];
+        if (!gState.guessed.has(l)) {
+          box.textContent = l;
+          box.classList.add('missed-reveal');
+        }
+      });
+
       gShowStatus(false);
-      gAdvanceTimer = setTimeout(gAdvanceWord, 3200);
+      gBuildKeyboard();
     }
   }
 
   function gShowStatus(won) {
     gStatusBanner.classList.add('show', won ? 'win' : 'lose');
-    gStatusTitle.textContent = won ? 'Você acertou!' : 'Não dessa vez.';
-    gStatusText.textContent = `A palavra era "${gState.entry.w}". ${gState.entry.hint}`;
+    gStatusTitle.textContent = won ? 'Glória! Você acertou! ✨' : 'Não foi dessa vez... 📖';
+    gStatusText.textContent = `A palavra correta era "${gState.entry.w}".`;
     const verses = won ? VERSES_WIN : VERSES_LOSE;
     gStatusVerse.textContent = verses[Math.floor(Math.random() * verses.length)];
+    
+    // Foco imediato no botão para facilitar avançar com o teclado
+    setTimeout(() => gNextBtn.focus(), 100);
   }
 
   document.getElementById('gameBackBtn').addEventListener('click', gBackToCategories);
-  document.getElementById('gameNextBtn').addEventListener('click', () => {
-    clearTimeout(gAdvanceTimer);
+  
+  gNextBtn.addEventListener('click', () => {
     gAdvanceWord();
   });
 
   window.addEventListener('keydown', e => {
-    if (!gWrap.classList.contains('active') || gState.over) return;
+    if (!gWrap.classList.contains('active')) return;
+
+    // Se a rodada acabou, avança pressionando Enter ou Espaço
+    if (gState.over) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        gAdvanceWord();
+      }
+      return;
+    }
+
     const letter = e.key.toUpperCase();
     if (/^[A-Z]$/.test(letter)) gGuess(letter);
   });
